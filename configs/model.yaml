@@ -1,0 +1,3 @@
+hidden_dim: 128
+n_hidden_layers: 4
+activation: tanh

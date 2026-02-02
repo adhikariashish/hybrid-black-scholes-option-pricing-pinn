@@ -1,0 +1,9 @@
+lr: 0.001
+epochs: 5000
+batch_size: 4096
+
+lambda_data: 1.0
+lambda_pde: 1.0
+lambda_bc: 1.0
+
+device: cpu
