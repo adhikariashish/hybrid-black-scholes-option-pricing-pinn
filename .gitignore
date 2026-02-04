@@ -3,3 +3,6 @@ runs/
 
 __pycache__/
 *.pyc
+
+data/processed/*
+!data/processed/.gitkeep

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
@@ -16,7 +16,21 @@ class PathsConfig:
     reports_dir: str = "reports"
 
 @dataclass
+class OptionConfig:
+    style: str = "european"   # european | american
+    type: str = "call"        # call | put
+
+
+@dataclass
+class DirConfig:
+    data: str = "data/processed/"
+
+
+@dataclass
 class DataConfig:
+    option: OptionConfig = field(default_factory=OptionConfig)
+    dir: DirConfig = field(default_factory=DirConfig)
+    save_mc: bool = False
     seed: int = 42
     n_paths: int = 50000
     n_steps: int = 252
@@ -135,7 +149,16 @@ def load_config(
     cfg = _merge_dicts(cfg, {"eval": _read_yaml(pr / eval_yaml)})
 
     if override_yaml:
-        cfg = _merge_dicts(cfg, {"override_yaml", _read_yaml(pr/override_yaml)})
+        cfg = _merge_dicts(cfg, {"override", _read_yaml(pr/override_yaml)})
+
+    # Convert nested dicts into nested dataclasses (important) ----
+    data_dict = cfg["data"]
+
+    if isinstance(data_dict.get("option"), dict):
+        data_dict["option"] = OptionConfig(**data_dict["option"])
+
+    if isinstance(data_dict.get("dir"), dict):
+        data_dict["dir"] = DirConfig(**data_dict["dir"])
 
     return AppConfig(
         paths=PathsConfig(**cfg["paths"]),
