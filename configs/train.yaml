@@ -1,9 +1,19 @@
-lr: 0.001
-epochs: 5000
-batch_size: 4096
-
-lambda_data: 1.0
-lambda_pde: 1.0
-lambda_bc: 1.0
-
+epochs: 2000
+lr: 1e-3
 device: cpu
+batch_size: int = 4096
+
+pinn:
+  n_interior: 20000
+  n_terminal: 2000
+  n_boundary: 2000
+
+weights:
+  pde: 1.0
+  terminal: 10.0
+  boundary: 1.0
+
+log_every: 100
+save_every: 1000
+run_dir: runs/pinn_v1
+seed: 42

@@ -48,14 +48,31 @@ class ModelConfig:
     activation: str = "tanh"
 
 @dataclass
+class PinnTrainConfig:
+    n_interior: int = 20000
+    n_terminal: int = 2000
+    n_boundary: int = 2000
+
+@dataclass
+class LossWeightConfig:
+    pde: float = 1.0
+    terminal: float = 10.0
+    boundary: float = 1.0
+
+@dataclass
 class TrainConfig:
     lr: float = 0.001
-    epochs: float = 5000
-    batch_size: float = 4096
-    lambda_data: float = 1.0
-    lambda_pde: float = 1.0
-    lambda_bc: float = 1.0
+    epochs: int = 5000
     device: str = "cpu"
+    batch_size: int = 4096
+
+    pinn: PinnTrainConfig = field(default_factory=PinnTrainConfig)
+    weights: LossWeightConfig = field(default_factory=LossWeightConfig)
+
+    log_every: int = 100
+    save_every: int = 1000
+    run_dir: str = "runs/pinn_v1"
+    seed: int = 42
 
 @dataclass
 class EvalConfig:
@@ -160,11 +177,17 @@ def load_config(
     if isinstance(data_dict.get("dir"), dict):
         data_dict["dir"] = DirConfig(**data_dict["dir"])
 
+    train_dict = cfg["train"]
+    if isinstance(train_dict.get("pinn"), dict):
+        train_dict["pinn"] = PinnTrainConfig(**train_dict["pinn"])
+    if isinstance(train_dict.get("weights"), dict):
+        train_dict["weights"] = LossWeightConfig(**train_dict["weights"])
+
     return AppConfig(
         paths=PathsConfig(**cfg["paths"]),
-        data=DataConfig(**cfg["data"]),
+        data=DataConfig(**data_dict),
         model=ModelConfig(**cfg["model"]),
-        train=TrainConfig(**cfg["train"]),
+        train=TrainConfig(**train_dict),
         eval=EvalConfig(**cfg["eval"]),
     )
 

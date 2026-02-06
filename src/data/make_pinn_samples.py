@@ -319,11 +319,12 @@ def make_pinn_dataset_from_cfg(cfg) -> PINNDataset:
 
     data_cfg = cfg.data
     option_cfg = cfg.data.option
+    train_cfg = cfg.train
 
     return make_pinn_dataset(
-        n_terminal=data_cfg.n_terminal,
-        n_interior=data_cfg.n_interior,
-        n_boundary=data_cfg.n_boundary,
+        n_terminal=train_cfg.pinn.n_terminal,
+        n_interior=train_cfg.pinn.n_interior,
+        n_boundary=train_cfg.pinn.n_boundary,
         t_maturity=data_cfg.t,
         k=data_cfg.k,
         r=data_cfg.r,
