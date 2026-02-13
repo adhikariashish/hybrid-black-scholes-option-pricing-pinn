@@ -106,7 +106,6 @@ def sample_terminal_points(
     
     return TerminalSet(s=s, t=t, v=v)
 
-
 def sample_interior_points(
         *,
         n: int,
@@ -114,39 +113,44 @@ def sample_interior_points(
         k: float,
         s_max: Optional[float] = None,
         seed: Optional[int] = None,
-        sampler: Literal["uniform"] = "uniform",
+        sampler: Literal["uniform", "mixture_k"] = "uniform",
         eps_t: float = 1e-6,
         eps_s: float = 1e-6,
+        mix_frac: float = 0.5,          # fraction near K
+        k_std_frac: float = 0.4,        # std as fraction of K
 ) -> InteriorSet:
-    """
-        Sample interior (collocation) points for enforcing the PDE residual
-            => (S, t) in (0,S_max) x (0,T)
-
-        Returns:
-            interiorSet with s, t, v arrays shaped (n,1)
-    """
-
-    if n<= 0:
-        raise ValueError(f"n must be >= 0")
-    if t_maturity <= 0:
-        raise ValueError(f"t_maturity must be >= 0")
-    if k <= 0:
-        raise ValueError(f"k must be >= 0")
-
+    ...
     s_hi = float(s_max) if s_max is not None else 3.0 * float(k)
-    if s_hi <= 0:
-        raise ValueError(f"s_hi must be >= 0")
-
-    if sampler != "uniform":
-        raise ValueError(f"Unsupported sampler {sampler!r}. Only uniform sampler is supported")
-
     rng = np.random.default_rng(seed)
 
-    # sample inside the open interval (0, S_max) and (0,T)
-    s = rng.uniform(eps_s, s_hi - eps_s, size=(n,))
-    t = rng.uniform(eps_t, float(t_maturity - eps_t), size=(n,))
+    # time is always uniform in (0, T)
+    t = rng.uniform(eps_t, float(t_maturity) - eps_t, size=(n,))
 
-    return InteriorSet(s = s.reshape(-1,1), t = t.reshape(-1,1))
+    if sampler == "uniform":
+        s = rng.uniform(eps_s, s_hi - eps_s, size=(n,))
+
+    elif sampler == "mixture_k":
+        n_k = int(round(n * mix_frac))
+        n_u = n - n_k
+
+        # uniform component
+        s_u = rng.uniform(eps_s, s_hi - eps_s, size=(n_u,))
+
+        # near-strike component (normal around K)
+        mu = float(k)
+        std = max(1e-12, float(k_std_frac) * float(k))
+        s_k = rng.normal(loc=mu, scale=std, size=(n_k,))
+
+        # clip into (0, Smax) open interval
+        s_k = np.clip(s_k, eps_s, s_hi - eps_s)
+
+        s = np.concatenate([s_u, s_k], axis=0)
+        rng.shuffle(s)
+
+    else:
+        raise ValueError(f"Unsupported sampler {sampler!r}. Use 'uniform' or 'mixture_k'.")
+
+    return InteriorSet(s=s.reshape(-1, 1), t=t.reshape(-1, 1))
 
 
 def boundary_value(
@@ -184,7 +188,7 @@ def boundary_value(
         if opt == "call":
             return np.zeros_like(t, dtype=float)
         else: #put option
-            return float(k) * k * np.exp(-float(r) * tau)
+            return float(k) * np.exp(-float(r) * tau)
     elif side == "high":
         if opt == "call":
             return s - float(k) * np.exp(-float(r) * tau)
@@ -294,6 +298,7 @@ def make_pinn_dataset(
         k=k,
         s_max=s_max,
         seed=None if seed is None else seed + 1,
+        sampler="mixture_k",
     )
 
     boundary = sample_boundary_points(

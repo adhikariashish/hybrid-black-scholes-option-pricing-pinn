@@ -1,19 +1,20 @@
-epochs: 2000
+epochs: 5000
 lr: 1e-3
 device: cpu
 batch_size: int = 4096
 
 pinn:
-  n_interior: 20000
-  n_terminal: 2000
-  n_boundary: 2000
+  n_interior: 60000
+  n_terminal: 5000
+  n_boundary: 5000
+  resample_every: 100
 
 weights:
-  pde: 1.0
-  terminal: 10.0
-  boundary: 1.0
+  pde: 2.0
+  terminal: 50.0
+  boundary: 10.0
 
 log_every: 100
 save_every: 1000
-run_dir: runs/pinn_v1
+run_dir: runs/pinn_v4
 seed: 42

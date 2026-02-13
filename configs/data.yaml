@@ -1,6 +1,7 @@
 option:
   style: european   #european | american
   type: call
+  s_max: 300.0
 
 dir:
   data: data/processed/

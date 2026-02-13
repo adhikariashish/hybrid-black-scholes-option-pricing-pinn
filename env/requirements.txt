@@ -2,3 +2,5 @@ pyyaml
 numpy
 matplotlib
 torch
+pandas
+streamlit

@@ -9,6 +9,7 @@ def bs_pde_residual(
         t: torch.Tensor,
         r: float,
         sigma: float,
+        T: float,
 ) -> torch.Tensor:
     """
         Compute Black-Scholes PDE residual at interior points:
@@ -35,6 +36,8 @@ def bs_pde_residual(
 
     v_ss = torch.autograd.grad(v_s, s, grad_outputs=torch.ones_like(v_s), create_graph=True, retain_graph=True)[0]
 
-    res = v_t + 0.5 * (sigma **2) * (s ** 2) * v_ss + r * s * v_s - r * v
+    # res = v_t + 0.5 * (sigma **2) * (s ** 2) * v_ss + r * s * v_s - r * v
+    # scaled PDE (normalized coords)
+    res = (1.0 / T) * v_t + 0.5 * (sigma ** 2) * (s ** 2) * v_ss + r * s * v_s - r * v
     return res
 

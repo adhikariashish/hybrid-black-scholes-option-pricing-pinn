@@ -19,6 +19,7 @@ class PathsConfig:
 class OptionConfig:
     style: str = "european"   # european | american
     type: str = "call"        # call | put
+    s_max: float = 300.0
 
 
 @dataclass
@@ -46,12 +47,15 @@ class ModelConfig:
     hidden_dim: int = 128
     n_hidden_layers: int = 4
     activation: str = "tanh"
+    in_dimension: int = 2
+    out_dimension: int = 1
 
 @dataclass
 class PinnTrainConfig:
     n_interior: int = 20000
     n_terminal: int = 2000
     n_boundary: int = 2000
+    resample_every: int = 100
 
 @dataclass
 class LossWeightConfig:
@@ -78,6 +82,8 @@ class TrainConfig:
 class EvalConfig:
     n_grid_s: int = 200
     n_grid_t: int = 50
+    fig_dir: str = "reports/figures/"
+    fig_folder_name: str = "pinn_v1"
 
 @dataclass
 class AppConfig:
