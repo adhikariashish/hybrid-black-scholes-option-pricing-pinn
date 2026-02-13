@@ -6,3 +6,5 @@ __pycache__/
 
 data/processed/*
 !data/processed/.gitkeep
+
+.tmp.driveupload/
