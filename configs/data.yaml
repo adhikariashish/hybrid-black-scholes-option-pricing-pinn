@@ -1,6 +1,6 @@
 option:
   style: european   #european | american
-  type: call
+  type: put
   s_max: 300.0
 
 dir:
@@ -13,8 +13,8 @@ n_steps: 252
 
 s0: 100.0
 k: 100.0
-t: 1.0
-r: 0.05
-sigma: 0.2
-option_type: call
+t: 0.25
+r: 0.02
+sigma: 0.1
+
 

@@ -40,7 +40,6 @@ class DataConfig:
     t: float = 1.0
     r: float = 0.05
     sigma: float = 0.2
-    option_type: str = "call"
 
 @dataclass
 class ModelConfig:

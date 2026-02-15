@@ -23,7 +23,7 @@ def main() -> None:
     parser.add_argument(
         "--ckpt",
         type=str,
-        default="runs/pinn_v2/checkpoint.pt",
+        default="runs/pinn_001/checkpoint_call.pt",
         help="Path to checkpoint file",
     )
     args = parser.parse_args()
@@ -70,7 +70,7 @@ def main() -> None:
         sigma=sigma,
         t=0.0,
         T=T,
-        option_type=option_type,
+        option_type=cfg.data.option.type,
     )[0]
 
     print("\n==== PRICE CHECK ====")

@@ -65,7 +65,7 @@ def compute_pinn_price_and_greeks(
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--ckpt", type=str, default="runs/pinn_v4/checkpoint.pt")
+    parser.add_argument("--ckpt", type=str, default="runs/001/checkpoint_call.pt")
     parser.add_argument("--n", type=int, default=400, help="number of S points")
     parser.add_argument("--s_min", type=float, default=0.0)
     parser.add_argument("--s_max", type=float, default=None, help="defaults to 3*K if not provided")
@@ -110,13 +110,16 @@ def main() -> None:
 
     fracs = [float(x.strip()) for x in args.times.split(",") if x.strip()]
     t_list = [f * T for f in fracs]
+    suffix = "call" if cfg.data.option.type == "call" else "put"
 
     # Output dir
     if args.out_dir is not None:
-        fig_dir = Path(args.out_dir)
+        fig_dir = Path(args.out_dir) / suffix
     else:
-        # default like reports/figures/pinn_v4 (use run folder name if you want)
-        fig_dir = Path("reports/figures") / ckpt_path.parent.name
+        # default: reports/figures/pinn_001/call (or put)
+        run_name = ckpt_path.parent.name
+        fig_dir = Path("reports/figures") / run_name / suffix
+
     fig_dir.mkdir(parents=True, exist_ok=True)
 
     for tt in t_list:

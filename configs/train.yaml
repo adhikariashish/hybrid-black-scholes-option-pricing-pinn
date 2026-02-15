@@ -1,6 +1,6 @@
 epochs: 5000
 lr: 1e-3
-device: cpu
+device: cuda
 batch_size: int = 4096
 
 pinn:
@@ -16,5 +16,5 @@ weights:
 
 log_every: 100
 save_every: 1000
-run_dir: runs/pinn_v4
+run_dir: runs/pinn_002
 seed: 42

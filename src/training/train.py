@@ -24,6 +24,18 @@ from src.data.make_pinn_samples import make_pinn_dataset_from_cfg, sample_interi
 def _to_tensor(a: np.ndarray, device: torch.device) -> torch.Tensor:
     return torch.from_numpy(a).to(device=device, dtype=torch.get_default_dtype())
 
+def _cfg_to_dict(cfg):
+    """
+    Recursively convert cfg object to plain dict.
+    Works for Namespace-like nested config objects.
+    """
+    if isinstance(cfg, dict):
+        return {k: _cfg_to_dict(v) for k, v in cfg.items()}
+    elif hasattr(cfg, "__dict__"):
+        return {k: _cfg_to_dict(v) for k, v in vars(cfg).items()}
+    else:
+        return cfg
+
 
 def main() -> None:
     #configuration for training
@@ -34,8 +46,14 @@ def main() -> None:
 
     device = torch.device(getattr(cfg.train, "device", "cpu"))
 
-    run_dir = Path(getattr(cfg.train, "run_dir", "runs/pinn_v1"))
+    run_dir = Path(getattr(cfg.train, "run_dir", "runs/pinn_001"))
     run_dir.mkdir(parents=True, exist_ok=True)
+    suffix = "call" if cfg.data.option.type == "call" else "put"
+
+    cfg_dict = _cfg_to_dict(cfg)
+    with open(run_dir / f"config_{suffix}.json", "w", encoding="utf-8") as f:
+        json.dump(cfg_dict, f, indent=2, default=str)
+
 
     # model
     # build from model.yaml
@@ -159,10 +177,15 @@ def main() -> None:
                     "model_state": model.state_dict(),
                     "model_cfg": model_cfg,
                     "history": history,
+                    "option_type": suffix,
+                    "s_max": s_max,
+                    "T": T,
+                    "r": r,
+                    "sigma": sigma,
                 },
-                run_dir / "checkpoint.pt",
+                run_dir / f"checkpoint_{suffix}.pt",
             )
-            with open(run_dir / "history.json", "w", encoding="utf-8") as f:
+            with open(run_dir / f"history_{suffix}.json", "w", encoding="utf-8") as f:
                 json.dump(history, f, indent=2)
 
         # quick readout: V(S0, t=0)

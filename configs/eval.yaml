@@ -1,4 +1,3 @@
 n_grid_s: 200
 n_grid_t: 50
-fig_dir: reports/figures/
-fig_folder_name: pinn_v4
+fig_dir: reports/figures
