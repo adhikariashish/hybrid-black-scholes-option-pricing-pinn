@@ -124,6 +124,7 @@ For baseline contract:
 - **Put relative error:** ~0.6%
 
 ![PINN vs Black-Scholes](figs/pinn_vs_bs.png)
+![PINN vs Black-Scholes](figs/pinn_vs_bs_put.png)
 
 ### Surface Solution
 
