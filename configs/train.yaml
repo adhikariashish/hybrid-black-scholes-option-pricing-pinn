@@ -1,6 +1,6 @@
 epochs: 5000
 lr: 1e-3
-device: cuda
+device: cpu
 batch_size: int = 4096
 
 pinn:

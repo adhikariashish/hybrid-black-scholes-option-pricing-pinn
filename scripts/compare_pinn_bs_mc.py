@@ -198,7 +198,7 @@ def pinn_prices_at(
 # ----------------------------
 def main() -> None:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--ckpt", type=str, default="runs/pinn_v1/checkpoint.pt")
+    ap.add_argument("--ckpt", type=str, default="runs/pinn_001/checkpoint_call.pt")
     ap.add_argument("--mc_npz", type=str, default="data/processed/mc_baseline.npz")
     ap.add_argument("--out_dir", type=str, default="reports/compare")
     ap.add_argument("--n_grid", type=int, default=12)
@@ -230,7 +230,7 @@ def main() -> None:
     sigma = float(cfg.data.sigma)
     T = float(cfg.data.t)
     option_type = (
-        cfg.data.option.type if hasattr(cfg.data, "option") else getattr(cfg.data, "option_type", "call")
+        cfg.data.option.type if hasattr(cfg.data, "option") else "call"
     )
     option_type = str(option_type).strip().lower()
 
@@ -255,7 +255,7 @@ def main() -> None:
             sigma=sigma,
             t=0.0,
             T=T,
-            option_type=option_type,
+            option_type=cfg.data.option.type,
         )[0]
     )
 
@@ -282,8 +282,16 @@ def main() -> None:
     rmse = float(np.sqrt(np.mean((pinn_vals - bs_vals) ** 2)))
     max_abs = float(np.max(np.abs(pinn_vals - bs_vals)))
 
-    # ---- Outputs
-    out_dir = Path(args.out_dir)
+    suffix = "call" if cfg.data.option.type == "call" else "put"
+
+    # Output dir
+    if args.out_dir is not None:
+        out_dir = Path(args.out_dir) / suffix
+    else:
+        # default: reports/figures/pinn_001/call (or put)
+        run_name = ckpt_path.parent.name
+        out_dir = Path("reports/compare") / run_name / suffix
+
     out_dir.mkdir(parents=True, exist_ok=True)
 
     df.to_csv(out_dir / "compare_table.csv", index=False)

@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+
+[project]
+name = "hybrid-black-scholes-option-pricing-pinn"
+version = "0.1.0"
+description = "Physics-Informed Neural Network (PINN) solver for the Black-Scholes PDE with interactive Streamlit dashboard."
+readme = "README.md"
+requires-python = ">=3.9"
+authors = [
+    { name="Ashish Adhikari" }
+]
+license = { text = "MIT" }
+
+dependencies = [
+    "torch>=2.0",
+    "numpy>=1.23",
+    "scipy>=1.9",
+    "matplotlib>=3.6",
+    "plotly>=5.0",
+    "streamlit>=1.30",
+    "pandas>=1.5",
+    "pyyaml>=6.0",
+]
+
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]

@@ -1,0 +1,32 @@
+{
+  "ckpt": "runs\\pinn_001\\checkpoint_call.pt",
+  "mc_npz": "data\\processed\\mc_baseline.npz",
+  "mc_regenerated": true,
+  "params": {
+    "S0": 100.0,
+    "K": 100.0,
+    "r": 0.02,
+    "sigma": 0.1,
+    "T": 0.25,
+    "option_type": "call",
+    "S_MAX": 300.0
+  },
+  "S0_check": {
+    "PINN": 10.423621454654441,
+    "BS": 2.248843136507652,
+    "abs_err_pinn_bs": 8.174778318146789,
+    "MC": 2.248236058285434,
+    "MC_se": 0.014226071967090333,
+    "MC_ci95": 0.027883101055497052,
+    "abs_err_mc_bs": 0.0006070782222180604
+  },
+  "curve_metrics": {
+    "t": 0.0,
+    "rmse_pinn_vs_bs": 5.345221180242847,
+    "max_abs_pinn_vs_bs": 8.174778318146787
+  },
+  "files": {
+    "table_csv": "reports/compare/call/compare_table.csv",
+    "summary_json": "reports/compare/call/summary.json"
+  }
+}
