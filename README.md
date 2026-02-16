@@ -28,15 +28,14 @@ $$
 \frac{\partial V}{\partial t} + \frac{1}{2}\sigma^2 S^2 \frac{\partial^2 V}{\partial S^2} + rS\frac{\partial V}{\partial S} - rV = 0
 $$
 
+
 **Subject to:**
 
 **Terminal Condition:**
-$$
-V(S,T) = \begin{cases}
-\max(S - K, 0) & \text{(Call)} \\
-\max(K - S, 0) & \text{(Put)}
-\end{cases}
-$$
+
+- **Call:** $V(S,T) = \max(S - K, 0)$
+- **Put:** $V(S,T) = \max(K - S, 0)$
+
 
 **Boundary Conditions:**
 - $V(0, t)$
