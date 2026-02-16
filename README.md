@@ -236,4 +236,4 @@ Demonstrates stability across parameter regimes.
 
 ## License
 
-[Add your license here]
+MIT License
