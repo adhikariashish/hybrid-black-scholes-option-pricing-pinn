@@ -1,5 +1,13 @@
 .idea/
-runs/
+runs/**/*.pt
+runs/**/*.pth
+runs/**/*.ckpt
+runs/**/*.json
+
+
+reports/**/**/*.csv
+reports/**/**/*.json
+reports/**/**/**/*.png
 
 __pycache__/
 *.pyc
